@@ -1,0 +1,7 @@
+google-generativeai
+docling
+python-dotenv
+transformers
+openai
+sentence-transformers
+faiss-cpu
