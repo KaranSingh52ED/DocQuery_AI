@@ -160,5 +160,7 @@ options:
 
 - **Combine options:**
   ```bash
-  python run_agent.py --pdf_path another_document.pdf --llm_model openai --embedding_model openai --questions "What is the remote work policy?"
+  python3 run_agent.py --pdf_path another_document.pdf --llm_model openai --embedding_model openai --questions "What is the remote work policy?"
   ```
+
+## Due to Some token Limitations this bounded under some restriction , please use you paid api keys for best outputs.
