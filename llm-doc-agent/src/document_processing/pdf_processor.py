@@ -11,8 +11,10 @@ from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 
+
 class PDFProcessor:
     """Handles PDF document processing."""
+
     def __init__(self, pdf_path: str):
         self.pdf_path = pdf_path
         self.text_content: DoclingDocument | None = None
@@ -24,6 +26,7 @@ class PDFProcessor:
         self._extract_text()
         if self.text_content:
             from transformers import AutoTokenizer
+
             tokenizer = AutoTokenizer.from_pretrained(settings.EMBEDDING_MODEL_NAME)
             self.chunker = HybridChunker(tokenizer=tokenizer)
             return self.chunk_text()
@@ -52,14 +55,22 @@ class PDFProcessor:
 
     def get_origin_text_from_chunk(self, chunk: DocChunk) -> str:
         """Get origin text from the chunk. Returns chunked text if no origin text available."""
-        text = " ".join([doc_item.orig for doc_item in chunk.meta.doc_items if type(doc_item) is TextItem])
+        text = " ".join(
+            [
+                doc_item.orig
+                for doc_item in chunk.meta.doc_items
+                if type(doc_item) is TextItem
+            ]
+        )
         if len(text.strip()) == 0:
             text = chunk.text
         return text
 
     def get_chunk_with_title(self, chunk: DocChunk) -> str:
         """Returns formatted chunk with section heading"""
-        return f"Title : {' '.join(chunk.meta.headings)} | {chunk.text}".replace("\n", " ")
+        return f"Title : {' '.join(chunk.meta.headings)} | {chunk.text}".replace(
+            "\n", " "
+        )
 
     def get_chunk(self, index: int) -> DocChunk:
         """Returns chunk by index"""

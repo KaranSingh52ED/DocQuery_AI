@@ -17,7 +17,7 @@ This project implements a Local Large Language Model (LLM) agent This is a Pytho
 ## File Structure
 
 ```
-llm-agent-pdf-reader/
+llm-doc-agent/
 ├── .gitignore
 ├── README.md
 ├── run_agent.py        # CLI script with configurable LLM and embedding
@@ -79,7 +79,7 @@ llm-agent-pdf-reader/
    LLM_MODEL_NAME="gemini-1.5-flash"
    OPENAI_LLM_MODEL_NAME="gpt-4o-mini"
    RERANKER_MODEL_NAME="cross-encoder/ms-marco-MiniLM-L-12-v2"
-   PDF_PATH="documents/handbook.pdf"
+   PDF_PATH="documents/test.pdf"
    ```
 
    **Note:**

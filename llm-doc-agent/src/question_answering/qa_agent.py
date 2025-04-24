@@ -12,9 +12,18 @@ from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 
+
 class QuestionAnswerer:
-    def __init__(self, embedding_model: EmbeddingModel, llm_agent: LLMAgentInterface, vector_store: VectorStore, pdf_processor: PDFProcessor,
-                 reranker_model_name: str = settings.RERANKER_MODEL_NAME, top_n: int = 10, rerank_top_n: int = 5):
+    def __init__(
+        self,
+        embedding_model: EmbeddingModel,
+        llm_agent: LLMAgentInterface,
+        vector_store: VectorStore,
+        pdf_processor: PDFProcessor,
+        reranker_model_name: str = settings.RERANKER_MODEL_NAME,
+        top_n: int = 10,
+        rerank_top_n: int = 5,
+    ):
         self.embedding_model = embedding_model
         self.llm_agent = llm_agent
         self.vector_store = vector_store
@@ -25,23 +34,37 @@ class QuestionAnswerer:
 
     def answer_question(self, question: str) -> Dict:
         query_embedding = self.embedding_model.encode([question])[0]
-        relevant_indices_with_scores = self.vector_store.search(query_embedding, top_k=self.top_n)
+        relevant_indices_with_scores = self.vector_store.search(
+            query_embedding, top_k=self.top_n
+        )
 
         if not relevant_indices_with_scores:
             return {"question": question, "answer": "Data Not Available"}
 
-        relevant_chunks = [self.pdf_processor.get_chunk(index) for index, _ in relevant_indices_with_scores]
-        relevant_chunk_texts = [self.vector_store.get_text(index) for index, _ in relevant_indices_with_scores]
+        relevant_chunks = [
+            self.pdf_processor.get_chunk(index)
+            for index, _ in relevant_indices_with_scores
+        ]
+        relevant_chunk_texts = [
+            self.vector_store.get_text(index)
+            for index, _ in relevant_indices_with_scores
+        ]
 
         # Re-ranking with CrossEncoder
         rerank_pairs = [(question, chunk) for chunk in relevant_chunk_texts]
         rerank_scores = self.reranker.predict(rerank_pairs)
 
         # Sort chunks based on reranker scores
-        ranked_chunks_with_scores = sorted(zip(relevant_chunks, rerank_scores), key=lambda x: x[1], reverse=True)
-        top_ranked_chunks = [chunk for chunk, _ in ranked_chunks_with_scores[:self.rerank_top_n]]
+        ranked_chunks_with_scores = sorted(
+            zip(relevant_chunks, rerank_scores), key=lambda x: x[1], reverse=True
+        )
+        top_ranked_chunks = [
+            chunk for chunk, _ in ranked_chunks_with_scores[: self.rerank_top_n]
+        ]
 
-        top_rated_chunk_texts = list(map(self.pdf_processor.get_origin_text_from_chunk, top_ranked_chunks))
+        top_rated_chunk_texts = list(
+            map(self.pdf_processor.get_origin_text_from_chunk, top_ranked_chunks)
+        )
 
         context = "\n\n".join(top_rated_chunk_texts)
 

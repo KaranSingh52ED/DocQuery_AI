@@ -1,0 +1,10 @@
+What is the candidate's name and contact information?
+What is the current job title and employer of the candidate?
+Can you list the candidate’s educational background?
+What technical and soft skills are mentioned in the resume?
+What certifications or licenses does the candidate have?
+Summarize the candidate’s work experience.
+What industries has the candidate worked in?
+Can you extract all programming languages mentioned in the resume?
+Which management or leadership roles has the candidate held?
+What projects or accomplishments stand out in this resume?
